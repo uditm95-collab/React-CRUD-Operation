@@ -1,27 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import EmployeeList from "./components/EmployeeList";
 import AddEmployee from "./components/AddEmployee";
 import EditEmployee from "./components/EditEmployee";
 import employeeService from "./services/employeeService";
 
 function App() {
-  const [employees, setEmployees] = useState(employeeService.getEmployees());
+  const [employees, setEmployees] = useState([]);
   const [editingEmployee, setEditingEmployee] = useState(null);
 
-  const addEmployee = emp => {
-    employeeService.addEmployee(emp);
-    setEmployees(employeeService.getEmployees());
+  // Load employees on mount
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  const fetchEmployees = async () => {
+    const data = await employeeService.getEmployees();
+    setEmployees(data);
   };
 
-  const updateEmployee = emp => {
-    employeeService.updateEmployee(emp);
-    setEmployees(employeeService.getEmployees());
+  const addEmployee = async (emp) => {
+    await employeeService.addEmployee(emp);
+    fetchEmployees();
+  };
+
+  const updateEmployee = async (emp) => {
+    await employeeService.updateEmployee(emp);
     setEditingEmployee(null);
+    fetchEmployees();
   };
 
-  const deleteEmployee = id => {
-    employeeService.deleteEmployee(id);
-    setEmployees(employeeService.getEmployees());
+  const deleteEmployee = async (id) => {
+    await employeeService.deleteEmployee(id);
+    fetchEmployees();
   };
 
   return (
@@ -34,4 +44,5 @@ function App() {
   );
 }
 
+export default App;
 export default App;
