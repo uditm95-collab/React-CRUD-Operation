@@ -1,22 +1,24 @@
-let employees = [];
-let nextId = 1;
+import axios from "axios";
 
-const getEmployees = () => {
-  return [...employees];
+const API_URL = "http://localhost:3001/employees";
+
+const getEmployees = async () => {
+  const response = await axios.get(API_URL);
+  return response.data;
 };
 
-const addEmployee = (employee) => {
-  employee.id = nextId++;
-  employees.push({ ...employee });
+const addEmployee = async (employee) => {
+  const response = await axios.post(API_URL, employee);
+  return response.data;
 };
 
-const updateEmployee = (employee) => {
-  const index = employees.findIndex(e => e.id === employee.id);
-  if (index !== -1) employees[index] = { ...employee };
+const updateEmployee = async (employee) => {
+  const response = await axios.put(`${API_URL}/${employee.id}`, employee);
+  return response.data;
 };
 
-const deleteEmployee = (id) => {
-  employees = employees.filter(e => e.id !== id);
+const deleteEmployee = async (id) => {
+  await axios.delete(`${API_URL}/${id}`);
 };
 
 export default { getEmployees, addEmployee, updateEmployee, deleteEmployee };
